@@ -1,7 +1,6 @@
 import type { ActionFunction } from "@remix-run/node"
 import { redirect, json } from "@remix-run/node"
 import { useActionData } from "@remix-run/react"
-import { Action } from "history"
 import { db } from "~/utils/db.server"
 
 function validateJokeContent(content: string) {
@@ -29,7 +28,7 @@ type ActionData = {
 }
 
 const badRequest = (data: ActionData) => {
-  json(data, { status: 400 })
+  return json(data, { status: 400 })
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -101,12 +100,21 @@ export default function NewJokeRoute() {
             />
           </label>
           {actionData?.fieldErrors?.content ? (
-            <p className="form-validation-error" role="alert">
-              {actionData.formError}
+            <p
+              className="form-validation-error"
+              role="alert"
+              id="content-error"
+            >
+              {actionData.fieldErrors.content}
             </p>
           ) : null}
         </div>
         <div>
+          {actionData?.formError ? (
+            <p className="form-validation-error" role="alert">
+              {actionData.formError}
+            </p>
+          ) : null}
           <button type="submit" className="button">
             Add
           </button>
